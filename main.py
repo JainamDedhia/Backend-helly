@@ -6,7 +6,7 @@ import os
 import uuid
 import zipfile
 
-from payslip_generator import process_excel_file
+from payslip_pdf_generator import process_excel_file
 
 app = FastAPI()
 
