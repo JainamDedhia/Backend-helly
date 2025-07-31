@@ -4,14 +4,13 @@ from fastapi.middleware.cors import CORSMiddleware
 import shutil
 import os
 import uuid
-
 from payslip_pdf_generator import process_excel_file
 
 app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # In production, restrict this
+    allow_origins=["*"],  # Restrict in production
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -27,20 +26,20 @@ async def generate_pdfs(file: UploadFile = File(...)):
     with open(file_path, "wb") as f:
         shutil.copyfileobj(file.file, f)
 
-    # Output folder
+    # Output folder for PDFs
     output_folder = f"{temp_folder}/output"
     os.makedirs(output_folder, exist_ok=True)
 
     # Generate PDFs
     generated_files = process_excel_file(file_path, output_folder=output_folder)
 
-    # Return list of PDF download URLs
+    # Build downloadable URLs
     download_urls = [
         f"/download-pdf/{temp_id}/{os.path.basename(pdf_path)}"
         for pdf_path in generated_files
     ]
 
-    return JSONResponse({"pdf_urls": download_urls})
+    return JSONResponse(download_urls)
 
 @app.get("/download-pdf/{session_id}/{filename}")
 async def download_pdf(session_id: str, filename: str):
