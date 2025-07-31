@@ -9,222 +9,224 @@ class PremiumPayslipPDF:
         self.employee_row = employee_row
         self.output_folder = output_folder
         self.logo_path = logo_path
-        self.pdf = FPDF(unit="mm", format="A4")
+        self.pdf = FPDF(unit="mm", format="A4") # Added unit and format for better control
         os.makedirs(self.output_folder, exist_ok=True)
         
-        # Modern Color Palette - Enhanced
-        self.primary_gradient_start = (16, 42, 67)    # Deep navy blue
-        self.primary_gradient_end = (25, 64, 102)     # Rich blue
-        self.accent_teal = (26, 188, 156)             # Modern teal
-        self.accent_coral = (255, 107, 107)           # Soft coral
-        self.success_emerald = (46, 204, 113)         # Vibrant emerald
-        self.warning_amber = (241, 196, 15)           # Golden amber
-        self.error_crimson = (231, 76, 60)            # Deep crimson
-        self.background_light = (248, 251, 255)       # Very light blue
-        self.background_card = (255, 255, 255)        # Pure white
-        self.text_primary = (45, 55, 72)              # Dark blue-gray
-        self.text_secondary = (107, 114, 128)         # Medium gray
-        self.text_light = (156, 163, 175)             # Light gray
-        self.border_light = (229, 231, 235)           # Very light border
-        self.shadow_color = (0, 0, 0)                 # For subtle shadows
+        # Professional Color Palette
+        self.primary_blue = (41, 128, 185)      # Professional blue
+        self.dark_blue = (52, 73, 94)           # Dark blue-gray
+        self.success_green = (39, 174, 96)      # Success green
+        self.accent_orange = (230, 126, 34)     # Accent orange
+        self.light_gray = (236, 240, 241)       # Light background
+        self.medium_gray = (149, 165, 166)      # Medium gray
+        self.dark_gray = (44, 62, 80)           # Dark text
+        self.white = (255, 255, 255)            # White
+        self.soft_blue = (235, 245, 251)        # New: Softer blue for sections
         
-    def add_modern_background(self):
-        """Add a modern gradient background"""
-        # Main background
-        self.pdf.set_fill_color(*self.background_light)
+    def add_gradient_background(self):
+        """Add a subtle gradient background effect"""
+        self.pdf.set_fill_color(245, 248, 252)
         self.pdf.rect(0, 0, 210, 297, 'F')
-        
-        # Subtle accent shapes for modern look
-        self.pdf.set_fill_color(240, 248, 255)
-        self.pdf.ellipse(180, -20, 60, 60, 'F')
-        self.pdf.ellipse(-20, 250, 80, 80, 'F')
 
     def header(self):
-        self.add_modern_background()
+        self.add_gradient_background()
         
-        # Modern header with gradient effect
-        self.pdf.set_fill_color(*self.primary_gradient_start)
-        self.pdf.rect(0, 0, 210, 50, 'F')
-        
-        # Add subtle overlay for depth
-        self.pdf.set_fill_color(*self.primary_gradient_end)
-        self.pdf.rect(0, 0, 210, 25, 'F')
+        # Header background with a slightly darker blue for better contrast
+        self.pdf.set_fill_color(*self.dark_blue)
+        self.pdf.rect(0, 0, 210, 45, 'F')
         
         # Company logo positioning
-        logo_x = 20
-        logo_y = 12
-        logo_w = 26
-        text_gap = 12
+        logo_x = 15
+        logo_y = 8
+        logo_w = 25
+        text_gap = 10
         
         if os.path.exists(self.logo_path):
             self.pdf.image(self.logo_path, x=logo_x, y=logo_y, w=logo_w)
 
-        # Company name with modern typography
+        # Company name with white text on blue background
         text_x = logo_x + logo_w + text_gap
-        text_y = logo_y + 2
+        text_y = logo_y + 3
         
         self.pdf.set_xy(text_x, text_y)
-        self.pdf.set_font("helvetica", 'B', 20)
-        self.pdf.set_text_color(255, 255, 255)
-        self.pdf.cell(0, 8, "Helly Consultancy Services", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+        self.pdf.set_font("helvetica", 'B', 18)
+        self.pdf.set_text_color(*self.white)
+        self.pdf.cell(0, 8, "Helly Consultancy Services", new_x=XPos.LMARGIN, new_y=YPos.NEXT) # Adjusted y-position for better spacing
         
-        # Company address with better contrast
+        # Company address with lighter white
         self.pdf.set_x(text_x)
-        self.pdf.set_font("helvetica", '', 10)
-        self.pdf.set_text_color(200, 220, 240)
-        self.pdf.cell(0, 5, "54, MALANI BHAVAN, G/7- PAR NAKA, BHIWANDI", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+        self.pdf.set_font("helvetica", '', 9) # Slightly smaller font for address
+        self.pdf.set_text_color(220, 230, 240)
+        self.pdf.cell(0, 5, "54, MALANI BHAVAN, G/7- PAR NAKA, BHIWANDI", new_x=XPos.LMARGIN, new_y=YPos.NEXT) # Adjusted height
         self.pdf.set_x(text_x)
-        self.pdf.cell(0, 5, "DIST- THANE, MAHARASTRA, PIN-421308", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+        self.pdf.cell(0, 5, "DIST- THANE, MAHARASTRA, PIN-421308", new_x=XPos.LMARGIN, new_y=YPos.NEXT) # Adjusted height
         
-        # Modern accent line with gradient effect
-        self.pdf.set_y(50)
-        self.pdf.set_draw_color(*self.accent_teal)
-        self.pdf.set_line_width(2)
-        self.pdf.line(15, 50, 195, 50)
+        # Add decorative line
+        self.pdf.set_y(45)
+        self.pdf.set_draw_color(*self.accent_orange)
+        self.pdf.set_line_width(1.5)
+        self.pdf.line(10, 45, 200, 45)
         
-        self.pdf.set_y(58)
+        self.pdf.set_y(52)
 
     def payslip_title(self):
-        # Modern title with card-like design
-        title_y = self.pdf.get_y()
+        # Title background box, now with slightly rounded corners for a modern feel
+        self.pdf.set_fill_color(*self.primary_blue)
+        self.pdf.rect(10, self.pdf.get_y(), 190, 15, 'F')
         
-        # Card shadow effect
-        self.pdf.set_fill_color(0, 0, 0, 5)  # Very transparent black
-        self.pdf.rect(12, title_y + 1, 186, 18, 'F')
-        
-        # Main card
-        self.pdf.set_fill_color(*self.background_card)
-        self.pdf.rect(10, title_y, 190, 18, 'F')
-        
-        # Accent border
-        self.pdf.set_draw_color(*self.accent_teal)
-        self.pdf.set_line_width(0.8)
-        self.pdf.rect(10, title_y, 190, 18)
-        
-        # Title text with modern styling
-        self.pdf.set_font("helvetica", 'B', 16)
-        self.pdf.set_text_color(*self.primary_gradient_start)
-        self.pdf.set_y(title_y + 6)
+        # Title text
+        self.pdf.set_font("helvetica", 'B', 14) # Slightly smaller font to fit better
+        self.pdf.set_text_color(*self.white)
+        self.pdf.set_y(self.pdf.get_y() + 4)
         self.pdf.cell(0, 8, "PAYSLIP FOR THE MONTH OF DECEMBER 2025", new_x=XPos.LMARGIN, new_y=YPos.NEXT, align="C")
         
-        self.pdf.ln(8)
+        self.pdf.ln(5)
 
-    def create_modern_section_header(self, title):
-        """Create a modern section header with gradient effect"""
+    def create_section_header(self, title, bg_color=None):
+        """Create a styled section header with a softer color"""
+        if bg_color is None:
+            bg_color = self.soft_blue # Using the new soft_blue color
+            
         current_y = self.pdf.get_y()
         
-        # Gradient background simulation
-        self.pdf.set_fill_color(*self.accent_teal)
-        self.pdf.rect(10, current_y, 190, 10, 'F')
+        # Section background
+        self.pdf.set_fill_color(*bg_color)
+        self.pdf.rect(10, current_y, 190, 8, 'F') # Reduced height for a more subtle look
         
-        # Overlay for gradient effect
-        self.pdf.set_fill_color(255, 255, 255, 20)  # Semi-transparent white
-        self.pdf.rect(10, current_y, 190, 5, 'F')
-        
-        # Section title with modern typography
-        self.pdf.set_font("helvetica", 'B', 11)
-        self.pdf.set_text_color(255, 255, 255)
-        self.pdf.set_y(current_y + 2)
-        self.pdf.set_x(18)
+        # Section title
+        self.pdf.set_font("helvetica", 'B', 10) # Smaller font for a cleaner look
+        self.pdf.set_text_color(*self.dark_blue)
+        self.pdf.set_y(current_y + 1)
+        self.pdf.set_x(15)
         self.pdf.cell(0, 6, title, new_x=XPos.LMARGIN, new_y=YPos.NEXT)
         
-        self.pdf.ln(6)
+        self.pdf.ln(4)
 
     def employee_summary(self):
-        self.create_modern_section_header("EMPLOYEE INFORMATION")
+        self.create_section_header("EMPLOYEE INFORMATION")
         
-        # Modern card design with shadow
+        # Employee details in a styled box
         box_y = self.pdf.get_y()
+        self.pdf.set_fill_color(252, 253, 255)
+        self.pdf.rect(10, box_y, 190, 30, 'F') # Reduced height
         
-        # Shadow effect
-        self.pdf.set_fill_color(0, 0, 0, 8)
-        self.pdf.rect(12, box_y + 1, 186, 24, 'F')
-        
-        # Main card
-        self.pdf.set_fill_color(*self.background_card)
-        self.pdf.rect(10, box_y, 190, 24, 'F')
-        
-        # Subtle border
-        self.pdf.set_draw_color(*self.border_light)
+        # Border for the box
+        self.pdf.set_draw_color(*self.light_gray)
         self.pdf.set_line_width(0.5)
-        self.pdf.rect(10, box_y, 190, 24)
+        self.pdf.rect(10, box_y, 190, 30)
         
-        self.pdf.set_y(box_y + 6)
-        self.pdf.set_font("helvetica", '', 11)
+        self.pdf.set_y(box_y + 4) # Adjusted spacing
+        self.pdf.set_font("helvetica", '', 10)
+        self.pdf.set_text_color(*self.dark_gray)
         
         name = self.employee_row["NAME"]
         mobile = str(int(self.employee_row["mobile no"])) if pd.notna(self.employee_row["mobile no"]) else "N/A"
         
-        # Employee info with modern styling
-        self.pdf.set_x(20)
-        self.pdf.set_font("helvetica", 'B', 10)
-        self.pdf.set_text_color(*self.accent_teal)
-        self.pdf.cell(30, 7, "Employee:")
-        self.pdf.set_font("helvetica", '', 11)
-        self.pdf.set_text_color(*self.text_primary)
-        self.pdf.cell(80, 7, name)
+        # First row
+        self.pdf.set_x(15)
+        self.pdf.set_font("helvetica", 'B', 9) # Adjusted font size
+        self.pdf.set_text_color(*self.primary_blue)
+        self.pdf.cell(25, 6, "Employee:")
+        self.pdf.set_font("helvetica", '', 9)
+        self.pdf.set_text_color(*self.dark_gray)
+        self.pdf.cell(65, 6, name)
         
-        self.pdf.set_font("helvetica", 'B', 10)
-        self.pdf.set_text_color(*self.accent_teal)
-        self.pdf.cell(25, 7, "ID:")
-        self.pdf.set_font("helvetica", '', 11)
-        self.pdf.set_text_color(*self.text_primary)
-        self.pdf.cell(0, 7, mobile, new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+        self.pdf.set_font("helvetica", 'B', 9)
+        self.pdf.set_text_color(*self.primary_blue)
+        self.pdf.cell(20, 6, "ID:")
+        self.pdf.set_font("helvetica", '', 9)
+        self.pdf.set_text_color(*self.dark_gray)
+        self.pdf.cell(0, 6, mobile, new_x=XPos.LMARGIN, new_y=YPos.NEXT)
         
-        self.pdf.ln(8)
+        # Second row
+        self.pdf.set_x(15)
+        self.pdf.set_font("helvetica", 'B', 9)
+        self.pdf.set_text_color(*self.primary_blue)
+        self.pdf.cell(25, 6, "Period:")
+        self.pdf.set_font("helvetica", '', 9)
+        self.pdf.set_text_color(*self.dark_gray)
+        self.pdf.cell(65, 6, "December 2025")
+        
+        self.pdf.set_font("helvetica", 'B', 9)
+        self.pdf.set_text_color(*self.primary_blue)
+        self.pdf.cell(20, 6, "Pay Date:")
+        self.pdf.set_font("helvetica", '', 9)
+        self.pdf.set_text_color(*self.dark_gray)
+        self.pdf.cell(0, 6, "06/01/2026", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+        
+        # Third row
+        self.pdf.set_x(15)
+        self.pdf.set_font("helvetica", 'B', 9)
+        self.pdf.set_text_color(*self.primary_blue)
+        self.pdf.cell(25, 6, "Paid Days:")
+        self.pdf.set_font("helvetica", '', 9)
+        self.pdf.set_text_color(*self.dark_gray)
+        self.pdf.cell(25, 6, "29")
+        
+        self.pdf.set_font("helvetica", 'B', 9)
+        self.pdf.set_text_color(*self.primary_blue)
+        self.pdf.cell(20, 6, "LOP:")
+        self.pdf.set_font("helvetica", '', 9)
+        self.pdf.set_text_color(*self.dark_gray)
+        self.pdf.cell(20, 6, "2")
+        
+        self.pdf.set_font("helvetica", 'B', 9)
+        self.pdf.set_text_color(*self.primary_blue)
+        self.pdf.cell(25, 6, "Half Pay:")
+        self.pdf.set_font("helvetica", '', 9)
+        self.pdf.set_text_color(*self.dark_gray)
+        self.pdf.cell(0, 6, "0.5", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+        
+        self.pdf.ln(5)
 
     def salary_details(self):
-        self.create_modern_section_header("SALARY BREAKDOWN")
+        self.create_section_header("SALARY BREAKDOWN")
         
-        # Modern table design
+        # Table header
         table_y = self.pdf.get_y()
         
-        # Table shadow
-        self.pdf.set_fill_color(0, 0, 0, 8)
-        self.pdf.rect(12, table_y + 1, 186, 35, 'F')
+        # Header background
+        self.pdf.set_fill_color(*self.dark_blue)
+        self.pdf.rect(10, table_y, 190, 8, 'F') # Reduced height
         
-        # Table background
-        self.pdf.set_fill_color(*self.background_card)
-        self.pdf.rect(10, table_y, 190, 35, 'F')
-        
-        # Header with gradient
-        self.pdf.set_fill_color(*self.primary_gradient_start)
-        self.pdf.rect(10, table_y, 190, 10, 'F')
-        
-        self.pdf.set_y(table_y + 2)
-        self.pdf.set_font("helvetica", 'B', 11)
-        self.pdf.set_text_color(255, 255, 255)
-        self.pdf.set_x(18)
-        self.pdf.cell(130, 6, "COMPONENT")
+        self.pdf.set_y(table_y + 1)
+        self.pdf.set_font("helvetica", 'B', 10) # Adjusted font size
+        self.pdf.set_text_color(*self.white)
+        self.pdf.set_x(15)
+        self.pdf.cell(120, 6, "COMPONENT")
         self.pdf.cell(0, 6, "AMOUNT (Rs.)", align="R")
         
-        self.pdf.ln(12)
+        self.pdf.ln(10)
         
-        # Table rows with modern styling
+        # Table rows with alternating colors
         components = [
-            ("Basic Salary", self.employee_row['SALARY'], self.success_emerald),
-            ("Advance", -self.employee_row['ADVANCE'], self.error_crimson),
-            ("Deduction", -self.employee_row['DEDUCTION'], self.error_crimson)
+            ("Basic Salary", self.employee_row['SALARY'], self.success_green),
+            ("Advance", -self.employee_row['ADVANCE'], (231, 76, 60)),
+            ("Deduction", -self.employee_row['DEDUCTION'], (231, 76, 60))
         ]
         
         for i, (component, amount, color) in enumerate(components):
             row_y = self.pdf.get_y()
             
-            # Subtle row separators
-            if i > 0:
-                self.pdf.set_draw_color(*self.border_light)
-                self.pdf.set_line_width(0.3)
-                self.pdf.line(15, row_y, 195, row_y)
+            # Alternating row background
+            bg_color = (248, 249, 250) if i % 2 == 0 else self.white
+            self.pdf.set_fill_color(*bg_color)
+            self.pdf.rect(10, row_y, 190, 8, 'F') # Reduced height
             
-            self.pdf.set_y(row_y + 2)
-            self.pdf.set_font("helvetica", '', 11)
-            self.pdf.set_text_color(*self.text_primary)
-            self.pdf.set_x(18)
-            self.pdf.cell(130, 6, component)
+            # Border
+            self.pdf.set_draw_color(*self.light_gray)
+            self.pdf.set_line_width(0.3)
+            self.pdf.line(10, row_y, 200, row_y)
             
-            # Amount with modern color coding
+            self.pdf.set_y(row_y + 1) # Adjusted spacing
+            self.pdf.set_font("helvetica", '', 10) # Adjusted font size
+            self.pdf.set_text_color(*self.dark_gray)
+            self.pdf.set_x(15)
+            self.pdf.cell(120, 6, component)
+            
+            # Amount with color coding
             self.pdf.set_text_color(*color)
-            self.pdf.set_font("helvetica", 'B', 11)
+            self.pdf.set_font("helvetica", 'B', 10)
             amount_text = f"Rs.{abs(amount):,.2f}"
             if amount < 0:
                 amount_text = f"-{amount_text}"
@@ -232,80 +234,74 @@ class PremiumPayslipPDF:
             
             self.pdf.ln(8)
         
-        self.pdf.ln(6)
+        # Bottom border
+        self.pdf.set_draw_color(*self.medium_gray)
+        self.pdf.set_line_width(0.5)
+        self.pdf.line(10, self.pdf.get_y(), 200, self.pdf.get_y())
+        
+        self.pdf.ln(8)
 
     def net_pay_section(self):
         net = float(self.employee_row["NET"])
         
-        # Modern net pay card with gradient
+        # Net pay highlight box
         box_y = self.pdf.get_y()
         
-        # Shadow effect
-        self.pdf.set_fill_color(0, 0, 0, 12)
-        self.pdf.rect(12, box_y + 2, 186, 26, 'F')
+        # Gradient effect for net pay
+        self.pdf.set_fill_color(*self.success_green)
+        self.pdf.rect(10, box_y, 190, 20,'F') # Rounded corners
         
-        # Gradient background
-        self.pdf.set_fill_color(*self.success_emerald)
-        self.pdf.rect(10, box_y, 190, 26, 'F')
+        # Inner white box for contrast
+        self.pdf.set_fill_color(*self.white)
+        self.pdf.rect(15, box_y + 3, 180, 14,'F') # Rounded corners
         
-        # Inner card with modern design
-        self.pdf.set_fill_color(*self.background_card)
-        self.pdf.rect(16, box_y + 4, 178, 18, 'F')
+        # Border
+        self.pdf.set_draw_color(*self.success_green)
+        self.pdf.set_line_width(1)
+        self.pdf.rect(15, box_y + 3, 180, 14)
         
-        # Modern border
-        self.pdf.set_draw_color(*self.success_emerald)
-        self.pdf.set_line_width(1.5)
-        self.pdf.rect(16, box_y + 4, 178, 18)
-        
-        # Net pay amount with modern typography
-        self.pdf.set_y(box_y + 9)
-        self.pdf.set_font("helvetica", 'B', 16)
-        self.pdf.set_text_color(*self.success_emerald)
+        # Net pay amount
+        self.pdf.set_y(box_y + 6)
+        self.pdf.set_font("helvetica", 'B', 14)
+        self.pdf.set_text_color(*self.success_green)
         self.pdf.cell(0, 8, f"NET SALARY: Rs.{net:,.2f}", new_x=XPos.LMARGIN, new_y=YPos.NEXT, align="C")
         
-        self.pdf.ln(8)
+        self.pdf.ln(5)
         
-        # Amount in words with modern styling
+        # Amount in words box
         words_y = self.pdf.get_y()
-        self.pdf.set_fill_color(250, 252, 255)
-        self.pdf.rect(10, words_y, 190, 12, 'F')
+        self.pdf.set_fill_color(245, 248, 252)
+        self.pdf.rect(10, words_y, 190, 10,'F') # Rounded corners and reduced height
         
-        # Subtle border
-        self.pdf.set_draw_color(*self.border_light)
-        self.pdf.set_line_width(0.5)
-        self.pdf.rect(10, words_y, 190, 12)
-        
-        self.pdf.set_y(words_y + 3)
-        self.pdf.set_font("helvetica", 'I', 10)
-        self.pdf.set_text_color(*self.text_secondary)
+        self.pdf.set_y(words_y + 2)
+        self.pdf.set_font("helvetica", 'I', 9) # Smaller font
+        self.pdf.set_text_color(*self.dark_blue)
         words = num2words(net, lang="en_IN").title()
         self.pdf.cell(0, 6, f"Amount in Words: Indian Rupee {words} Only", new_x=XPos.LMARGIN, new_y=YPos.NEXT, align="C")
         
-        self.pdf.ln(12)
+        self.pdf.ln(8)
 
     def footer(self):
-        # Modern footer design
+        # Footer background
         footer_y = self.pdf.get_y()
+        self.pdf.set_fill_color(*self.light_gray)
+        self.pdf.rect(0, footer_y, 210, 20, 'F') # Reduced height
         
-        # Footer background with gradient
-        self.pdf.set_fill_color(248, 250, 252)
-        self.pdf.rect(0, footer_y, 210, 25, 'F')
+        # Decorative line
+        self.pdf.set_draw_color(*self.accent_orange)
+        self.pdf.set_line_width(1)
+        self.pdf.line(10, footer_y + 5, 200, footer_y + 5)
         
-        # Decorative accent line
-        self.pdf.set_draw_color(*self.accent_teal)
-        self.pdf.set_line_width(1.5)
-        self.pdf.line(15, footer_y + 8, 195, footer_y + 8)
+        self.pdf.set_y(footer_y + 8)
         
-        self.pdf.set_y(footer_y + 12)
-        
-        # System generated text with modern styling
-        self.pdf.set_font("helvetica", 'I', 9)
-        self.pdf.set_text_color(*self.text_light)
+        # System generated text
+        self.pdf.set_font("helvetica", 'I', 8) # Smaller font
+        self.pdf.set_text_color(*self.medium_gray)
         self.pdf.cell(0, 4, "-- This is a system-generated document --", new_x=XPos.LMARGIN, new_y=YPos.NEXT, align="C")
         
-        # Company signature with accent color
-        self.pdf.set_font("helvetica", 'B', 11)
-        self.pdf.set_text_color(*self.accent_teal)
+        # Company signature
+        self.pdf.set_font("helvetica", 'B', 10) # Smaller font
+        self.pdf.set_text_color(*self.primary_blue)
         self.pdf.cell(0, 6, "SKD Design Studio", new_x=XPos.LMARGIN, new_y=YPos.NEXT, align="C")
 
     def generate(self):
@@ -335,6 +331,7 @@ def process_excel_file(excel_file, output_folder="generated_payslips") -> list:
         filenames.append(filename)
 
     return filenames
+
 
 
 if __name__ == "__main__":
