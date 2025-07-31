@@ -319,18 +319,19 @@ class PremiumPayslipPDF:
         return filename
 
 
-def process_excel_file(excel_file) -> list:
+def process_excel_file(excel_file, output_folder="generated_payslips") -> list:
     df = pd.read_excel(excel_file, header=4)
     df.columns = df.columns.str.strip()
     df = df[df["NAME"].notna()]
 
     filenames = []
     for _, row in df.iterrows():
-        payslip = PremiumPayslipPDF(employee_row=row)
+        payslip = PremiumPayslipPDF(employee_row=row, output_folder=output_folder)
         filename = payslip.generate()
         filenames.append(filename)
 
     return filenames
+
 
 
 if __name__ == "__main__":

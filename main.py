@@ -1,10 +1,9 @@
 from fastapi import FastAPI, UploadFile, File
-from fastapi.responses import FileResponse
+from fastapi.responses import JSONResponse, FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 import shutil
 import os
 import uuid
-import zipfile
 
 from payslip_pdf_generator import process_excel_file
 
@@ -12,7 +11,7 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Restrict in prod
+    allow_origins=["*"],  # In production, restrict this
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -28,17 +27,24 @@ async def generate_pdfs(file: UploadFile = File(...)):
     with open(file_path, "wb") as f:
         shutil.copyfileobj(file.file, f)
 
-    # Set output folder for PDFs
+    # Output folder
     output_folder = f"{temp_folder}/output"
     os.makedirs(output_folder, exist_ok=True)
 
     # Generate PDFs
-    generated_files = process_excel_file(file_path)
+    generated_files = process_excel_file(file_path, output_folder=output_folder)
 
-    # Zip them
-    zip_path = f"{temp_folder}/payslips.zip"
-    with zipfile.ZipFile(zip_path, "w") as zipf:
-        for pdf_path in generated_files:
-            zipf.write(pdf_path, arcname=os.path.basename(pdf_path))
+    # Return list of PDF download URLs
+    download_urls = [
+        f"/download-pdf/{temp_id}/{os.path.basename(pdf_path)}"
+        for pdf_path in generated_files
+    ]
 
-    return FileResponse(zip_path, filename="payslips.zip", media_type="application/zip")
+    return JSONResponse({"pdf_urls": download_urls})
+
+@app.get("/download-pdf/{session_id}/{filename}")
+async def download_pdf(session_id: str, filename: str):
+    file_path = f"temp/{session_id}/output/{filename}"
+    if os.path.exists(file_path):
+        return FileResponse(file_path, media_type='application/pdf', filename=filename)
+    return JSONResponse(status_code=404, content={"error": "File not found"})
