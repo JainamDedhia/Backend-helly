@@ -1,0 +1,7 @@
+fastapi
+uvicorn
+pandas
+fpdf
+num2words
+python-multipart
+openpyxl
