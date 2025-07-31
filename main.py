@@ -4,6 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import shutil
 import os
 import uuid
+import pandas as pd
 from payslip_pdf_generator import process_excel_file
 
 app = FastAPI()
