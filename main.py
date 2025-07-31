@@ -26,20 +26,32 @@ async def generate_pdfs(file: UploadFile = File(...)):
     with open(file_path, "wb") as f:
         shutil.copyfileobj(file.file, f)
 
-    # Output folder
     output_folder = f"{temp_folder}/output"
     os.makedirs(output_folder, exist_ok=True)
 
-    # Generate PDFs and get employee data
-    employees_data = process_excel_file(file_path, output_folder=output_folder)
+    # Generate PDFs
+    generated_files = process_excel_file(file_path, output_folder=output_folder)
 
-    # Add download URLs to each employee record
-    for emp in employees_data:
-        filename = os.path.basename(emp["pdf_path"])
-        emp["pdf_url"] = f"/download-pdf/{temp_id}/{filename}"
-        del emp["pdf_path"]  # Remove local path from API response
+    # Read employee data to return JSON (same as PDF generation)
+    df = pd.read_excel(file_path, header=4)
+    df.columns = df.columns.str.strip()
+    df = df[df["NAME"].notna()]
+    df = df.reset_index(drop=True)
 
-    return JSONResponse(employees_data)
+    response = []
+    for i, row in df.iterrows():
+        emp_name = '_'.join(str(row['NAME']).strip().split()).title()
+        filename = f"{emp_name}_December.pdf"
+        download_url = f"/download-pdf/{temp_id}/{filename}"
+        response.append({
+            "id": i + 1,
+            "name": row["NAME"],
+            "salary": float(row["SALARY"]),
+            "pdf_url": download_url
+        })
+
+    return response
+
 
 @app.get("/download-pdf/{session_id}/{filename}")
 async def download_pdf(session_id: str, filename: str):
