@@ -10,7 +10,7 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Restrict in production
+    allow_origins=["*"],  # In production, restrict this
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -26,20 +26,20 @@ async def generate_pdfs(file: UploadFile = File(...)):
     with open(file_path, "wb") as f:
         shutil.copyfileobj(file.file, f)
 
-    # Output folder for PDFs
+    # Output folder
     output_folder = f"{temp_folder}/output"
     os.makedirs(output_folder, exist_ok=True)
 
-    # Generate PDFs
-    generated_files = process_excel_file(file_path, output_folder=output_folder)
+    # Generate PDFs and get employee data
+    employees_data = process_excel_file(file_path, output_folder=output_folder)
 
-    # Build downloadable URLs
-    download_urls = [
-        f"/download-pdf/{temp_id}/{os.path.basename(pdf_path)}"
-        for pdf_path in generated_files
-    ]
+    # Add download URLs to each employee record
+    for emp in employees_data:
+        filename = os.path.basename(emp["pdf_path"])
+        emp["pdf_url"] = f"/download-pdf/{temp_id}/{filename}"
+        del emp["pdf_path"]  # Remove local path from API response
 
-    return JSONResponse(download_urls)
+    return JSONResponse(employees_data)
 
 @app.get("/download-pdf/{session_id}/{filename}")
 async def download_pdf(session_id: str, filename: str):
