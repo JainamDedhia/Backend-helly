@@ -57,9 +57,9 @@ class PremiumPayslipPDF:
         self.pdf.set_x(text_x)
         self.pdf.set_font("helvetica", '', 9) # Slightly smaller font for address
         self.pdf.set_text_color(220, 230, 240)
-        self.pdf.cell(0, 5, "54, MALANI BHAVAN, G/7- PAR NAKA, BHIWANDI", new_x=XPos.LMARGIN, new_y=YPos.NEXT) # Adjusted height
+        self.pdf.cell(0, 5, "11,Shridevi apartment, 1st Floor,behind bhiwandi talkies ", new_x=XPos.LMARGIN, new_y=YPos.NEXT) # Adjusted height
         self.pdf.set_x(text_x)
-        self.pdf.cell(0, 5, "DIST- THANE, MAHARASTRA, PIN-421308", new_x=XPos.LMARGIN, new_y=YPos.NEXT) # Adjusted height
+        self.pdf.cell(0, 5, "BHIWANDI,DIST- THANE,MAHARASHTRA, PIN-421308, MOBL: 7028630748", new_x=XPos.LMARGIN, new_y=YPos.NEXT) # Adjusted height
         
         # Add decorative line
         self.pdf.set_y(45)
