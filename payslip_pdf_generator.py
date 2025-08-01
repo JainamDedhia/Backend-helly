@@ -78,7 +78,7 @@ class PremiumPayslipPDF:
         self.pdf.set_font("helvetica", 'B', 14) # Slightly smaller font to fit better
         self.pdf.set_text_color(*self.white)
         self.pdf.set_y(self.pdf.get_y() + 4)
-        self.pdf.cell(0, 8, "PAYSLIP FOR THE MONTH OF DECEMBER 2025", new_x=XPos.LMARGIN, new_y=YPos.NEXT, align="C")
+        self.pdf.cell(0, 8, "PAYSLIP", new_x=XPos.LMARGIN, new_y=YPos.NEXT, align="C")
         
         self.pdf.ln(5)
 
@@ -133,7 +133,7 @@ class PremiumPayslipPDF:
         
         self.pdf.set_font("helvetica", 'B', 9)
         self.pdf.set_text_color(*self.primary_blue)
-        self.pdf.cell(20, 6, "ID:")
+        self.pdf.cell(20, 6, "Phone no:")
         self.pdf.set_font("helvetica", '', 9)
         self.pdf.set_text_color(*self.dark_gray)
         self.pdf.cell(0, 6, mobile, new_x=XPos.LMARGIN, new_y=YPos.NEXT)
@@ -155,27 +155,7 @@ class PremiumPayslipPDF:
         self.pdf.cell(0, 6, "06/01/2026", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
         
         # Third row
-        self.pdf.set_x(15)
-        self.pdf.set_font("helvetica", 'B', 9)
-        self.pdf.set_text_color(*self.primary_blue)
-        self.pdf.cell(25, 6, "Paid Days:")
-        self.pdf.set_font("helvetica", '', 9)
-        self.pdf.set_text_color(*self.dark_gray)
-        self.pdf.cell(25, 6, "29")
-        
-        self.pdf.set_font("helvetica", 'B', 9)
-        self.pdf.set_text_color(*self.primary_blue)
-        self.pdf.cell(20, 6, "LOP:")
-        self.pdf.set_font("helvetica", '', 9)
-        self.pdf.set_text_color(*self.dark_gray)
-        self.pdf.cell(20, 6, "2")
-        
-        self.pdf.set_font("helvetica", 'B', 9)
-        self.pdf.set_text_color(*self.primary_blue)
-        self.pdf.cell(25, 6, "Half Pay:")
-        self.pdf.set_font("helvetica", '', 9)
-        self.pdf.set_text_color(*self.dark_gray)
-        self.pdf.cell(0, 6, "0.5", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+
         
         self.pdf.ln(5)
 
@@ -302,7 +282,7 @@ class PremiumPayslipPDF:
         # Company signature
         self.pdf.set_font("helvetica", 'B', 10) # Smaller font
         self.pdf.set_text_color(*self.primary_blue)
-        self.pdf.cell(0, 6, "SKD Design Studio", new_x=XPos.LMARGIN, new_y=YPos.NEXT, align="C")
+        self.pdf.cell(0, 6, "Helly Consultancy Services", new_x=XPos.LMARGIN, new_y=YPos.NEXT, align="C")
 
     def generate(self):
         self.pdf.add_page()
