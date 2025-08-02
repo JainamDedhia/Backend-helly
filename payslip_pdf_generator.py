@@ -5,7 +5,7 @@ from num2words import num2words
 
 
 class PremiumPayslipPDF:
-    def __init__(self, employee_row, output_folder="generated_payslips", logo_path="Viral-Photoroom.png"):
+    def __init__(self, employee_row, output_folder="generated_payslips", logo_path="Viral-Photoroom.png",month="December", year="2024"):
         self.employee_row = employee_row
         self.output_folder = output_folder
         self.logo_path = logo_path
@@ -301,7 +301,7 @@ class PremiumPayslipPDF:
         return filename
 
 
-def process_excel_file(excel_file, output_folder="generated_payslips") -> list:
+def process_excel_file(excel_file, output_folder="generated_payslips", month=month, year=year) -> list:
     df = pd.read_excel(excel_file, header=4)
     df.columns = df.columns.str.strip()
     df = df[df["NAME"].notna()]
