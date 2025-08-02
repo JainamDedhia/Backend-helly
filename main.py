@@ -1,4 +1,4 @@
-from fastapi import FastAPI, UploadFile, File
+from fastapi import FastAPI, UploadFile, File, Form
 from fastapi.responses import JSONResponse, FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 import shutil
@@ -6,6 +6,7 @@ import os
 import uuid
 import pandas as pd
 from payslip_pdf_generator import process_excel_file
+
 
 app = FastAPI()
 
@@ -18,7 +19,7 @@ app.add_middleware(
 )
 
 @app.post("/generate-pdfs/")
-async def generate_pdfs(file: UploadFile = File(...)):
+async def generate_pdfs(file: UploadFile = File(...),month: str = Form(...),year: str = Form(...)):
     temp_id = str(uuid.uuid4())
     temp_folder = f"temp/{temp_id}"
     os.makedirs(temp_folder, exist_ok=True)
@@ -31,7 +32,7 @@ async def generate_pdfs(file: UploadFile = File(...)):
     os.makedirs(output_folder, exist_ok=True)
 
     # Generate PDFs
-    generated_files = process_excel_file(file_path, output_folder=output_folder)
+    generated_files = process_excel_file(file_path, output_folder=output_folder,month=month,year=year)
 
     # Read employee data to return JSON (same as PDF generation)
     df = pd.read_excel(file_path, header=4)
