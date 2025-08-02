@@ -19,7 +19,7 @@ app.add_middleware(
 )
 
 @app.post("/generate-pdfs/")
-async def generate_pdfs(file: UploadFile = File(...),month: str = Form(...),year: str = Form(...):date: str = Form(...)):
+async def generate_pdfs(file: UploadFile = File(...),month: str = Form(...),year: str = Form(...),date: str = Form(...)):
     temp_id = str(uuid.uuid4())
     temp_folder = f"temp/{temp_id}"
     os.makedirs(temp_folder, exist_ok=True)
