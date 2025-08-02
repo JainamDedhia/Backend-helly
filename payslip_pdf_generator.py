@@ -5,7 +5,7 @@ from num2words import num2words
 
 
 class PremiumPayslipPDF:
-    def __init__(self, employee_row, output_folder="generated_payslips", logo_path="Viral-Photoroom.png",month="December", year="2024"):
+    def __init__(self, employee_row, output_folder="generated_payslips", logo_path="Viral-Photoroom.png",month="December", year="2024",date=None):
         self.employee_row = employee_row
         self.output_folder = output_folder
         self.logo_path = logo_path
@@ -13,6 +13,7 @@ class PremiumPayslipPDF:
         os.makedirs(self.output_folder, exist_ok=True)
         self.month = month
         self.year = year
+        self.date= date
         
         # Professional Color Palette
         self.primary_blue = (41, 128, 185)      # Professional blue
@@ -147,14 +148,21 @@ class PremiumPayslipPDF:
         self.pdf.cell(25, 6, "Period:")
         self.pdf.set_font("helvetica", '', 9)
         self.pdf.set_text_color(*self.dark_gray)
-        self.pdf.cell(65, 6, "December 2025")
-        
+        # Period (e.g., "August 2025")
+        period = f"{self.month} {self.year}"
+
+        # Pay date fallback if not provided
+        pay_date = self.date if self.date else "N/A"
+
+        self.pdf.cell(65, 6, period)
+
         self.pdf.set_font("helvetica", 'B', 9)
         self.pdf.set_text_color(*self.primary_blue)
         self.pdf.cell(20, 6, "Pay Date:")
         self.pdf.set_font("helvetica", '', 9)
         self.pdf.set_text_color(*self.dark_gray)
-        self.pdf.cell(0, 6, "06/01/2026", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+        self.pdf.cell(0, 6, pay_date, new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+
         
         # Third row
 
@@ -301,14 +309,14 @@ class PremiumPayslipPDF:
         return filename
 
 
-def process_excel_file(excel_file, output_folder="generated_payslips", month="December", year="2024") -> list:
+def process_excel_file(excel_file, output_folder="generated_payslips", month="December", year="2024",date=None) -> list:
     df = pd.read_excel(excel_file, header=4)
     df.columns = df.columns.str.strip()
     df = df[df["NAME"].notna()]
 
     filenames = []
     for _, row in df.iterrows():
-        payslip = PremiumPayslipPDF(employee_row=row, output_folder=output_folder,month=month,year=year)
+        payslip = PremiumPayslipPDF(employee_row=row, output_folder=output_folder,month=month,year=year,date=date)
         filename = payslip.generate()
         filenames.append(filename)
 
