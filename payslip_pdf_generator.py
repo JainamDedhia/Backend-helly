@@ -11,6 +11,8 @@ class PremiumPayslipPDF:
         self.logo_path = logo_path
         self.pdf = FPDF(unit="mm", format="A4") # Added unit and format for better control
         os.makedirs(self.output_folder, exist_ok=True)
+        self.month = month
+        self.year = year
         
         # Professional Color Palette
         self.primary_blue = (41, 128, 185)      # Professional blue
@@ -78,7 +80,7 @@ class PremiumPayslipPDF:
         self.pdf.set_font("helvetica", 'B', 14) # Slightly smaller font to fit better
         self.pdf.set_text_color(*self.white)
         self.pdf.set_y(self.pdf.get_y() + 4)
-        self.pdf.cell(0, 8, "PAYSLIP", new_x=XPos.LMARGIN, new_y=YPos.NEXT, align="C")
+        self.pdf.cell(0, 7, f"Payslip for the Month: {self.month} {self.year}", new_x=XPos.LMARGIN, new_y=YPos.NEXT, align="C")
         
         self.pdf.ln(5)
 
