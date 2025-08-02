@@ -32,7 +32,7 @@ async def generate_pdfs(file: UploadFile = File(...),month: str = Form(...),year
     os.makedirs(output_folder, exist_ok=True)
 
     # Generate PDFs
-    generated_files = process_excel_file(file_path, output_folder=output_folder,month=month,year=year)
+    generated_files = process_excel_file(file_path, output_folder=output_folder,month=month,year=year,date=date)
 
     # Read employee data to return JSON (same as PDF generation)
     df = pd.read_excel(file_path, header=4)
