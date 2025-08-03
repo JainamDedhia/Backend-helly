@@ -31,11 +31,11 @@ class PremiumPayslipPDF:
 
     def header(self):
         self.add_gradient_background()
-        self.pdf.set_fill_color(*self.dark_blue)
+        self.pdf.set_fill_color(*self.light_gray)
         self.pdf.rect(0, 0, 210, 45, 'F')
 
         if os.path.exists(self.logo_path):
-            self.pdf.image(self.logo_path, x=15, y=8, w=25)
+            self.pdf.image(self.logo_path, x=10, y=8, w=18)
 
         self.pdf.set_xy(50, 11)
         self.pdf.set_font("helvetica", 'B', 18)
@@ -55,7 +55,7 @@ class PremiumPayslipPDF:
         self.pdf.set_y(50)
 
     def payslip_title(self):
-        self.pdf.set_fill_color(*self.primary_blue)
+        self.pdf.set_fill_color(*self.medium_gray)
         self.pdf.rect(10, self.pdf.get_y(), 190, 15, 'F')
 
         self.pdf.set_font("helvetica", 'B', 14)
