@@ -64,13 +64,6 @@ class PremiumPayslipPDF:
         self.pdf.set_x(text_x)
         self.pdf.cell(0, 5, "BHIWANDI,DIST- THANE,MAHARASHTRA, PIN-421308, MOBL: 7028630748", new_x=XPos.LMARGIN, new_y=YPos.NEXT) # Adjusted height
         
-        # Add decorative line
-        self.pdf.set_y(45)
-        self.pdf.set_draw_color(*self.accent_orange)
-        self.pdf.set_line_width(1.5)
-        self.pdf.line(10, 45, 200, 45)
-        
-        self.pdf.set_y(52)
 
     def payslip_title(self):
         # Title background box, now with slightly rounded corners for a modern feel
@@ -170,7 +163,7 @@ class PremiumPayslipPDF:
         self.pdf.ln(5)
 
     def salary_details(self):
-        self.create_section_header("SALARY BREAKDOWN")
+        self.create_section_header("SALARY AGGREGATION")
         
         # Table header
         table_y = self.pdf.get_y()
@@ -191,8 +184,8 @@ class PremiumPayslipPDF:
         # Table rows with alternating colors
         components = [
             ("Basic Salary", self.employee_row['SALARY'], self.success_green),
-            ("Advance", -self.employee_row['ADVANCE'], (231, 76, 60)),
-            ("Deduction", -self.employee_row['DEDUCTION'], (231, 76, 60))
+            ("(+)Advance", -self.employee_row['ADVANCE'], (231, 76, 60)),
+            ("(-)Deduction", -self.employee_row['DEDUCTION'], (231, 76, 60))
         ]
         
         for i, (component, amount, color) in enumerate(components):
@@ -230,6 +223,21 @@ class PremiumPayslipPDF:
         self.pdf.line(10, self.pdf.get_y(), 200, self.pdf.get_y())
         
         self.pdf.ln(8)
+
+        # Total display here
+        total = self.employee_row['NET']
+        self.pdf.set_fill_color(241, 243, 245)  # Light gray background
+        row_y = self.pdf.get_y()
+        self.pdf.rect(10, row_y, 190, 10, 'F')
+
+        self.pdf.set_font("helvetica", 'B', 11)
+        self.pdf.set_text_color(*self.dark_gray)
+        self.pdf.set_x(15)
+        self.pdf.cell(120, 8, "Net Pay (Total)")
+
+        self.pdf.set_text_color(*self.success_green)
+        self.pdf.cell(0, 8, f"Rs.{total:,.2f}", align="R")
+        self.pdf.ln(12)
 
     def net_pay_section(self):
         net = float(self.employee_row["NET"])
