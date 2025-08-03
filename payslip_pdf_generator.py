@@ -22,6 +22,7 @@ class PremiumPayslipPDF:
         self.medium_gray = (220, 220, 220)
         self.dark_gray = (50, 50, 50)
         self.section_gray = (235, 235, 235)
+        self.lime_green = (144, 238, 144)
 
     def add_gradient_background(self):
         self.pdf.set_fill_color(*self.white)
@@ -181,13 +182,13 @@ class PremiumPayslipPDF:
     def net_pay_section(self):
         net = float(self.employee_row["NET"])
         box_y = self.pdf.get_y()
-        self.pdf.set_fill_color(*self.medium_gray)
+        self.pdf.set_fill_color(*self.lime_green)
         self.pdf.rect(10, box_y, 190, 18, 'F')
 
         self.pdf.set_fill_color(*self.white)
         self.pdf.rect(15, box_y + 3, 180, 11, 'F')
 
-        self.pdf.set_draw_color(*self.medium_gray)
+        self.pdf.set_draw_color(*self.lime_green)
         self.pdf.set_line_width(1)
         self.pdf.rect(15, box_y + 3, 180, 11)
 
@@ -198,7 +199,7 @@ class PremiumPayslipPDF:
         self.pdf.ln(3)
 
         words_y = self.pdf.get_y()
-        self.pdf.set_fill_color(*self.section_gray)
+        self.pdf.set_fill_color(*self.lime_green)
         self.pdf.rect(10, words_y, 190, 8, 'F')
 
         self.pdf.set_y(words_y + 2)
