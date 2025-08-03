@@ -64,6 +64,10 @@ class PremiumPayslipPDF:
         self.pdf.set_x(text_x)
         self.pdf.cell(0, 5, "BHIWANDI,DIST- THANE,MAHARASHTRA, PIN-421308, MOBL: 7028630748", new_x=XPos.LMARGIN, new_y=YPos.NEXT) # Adjusted height
         
+        self.pdf.set_line_width(1.5)
+        self.pdf.line(10, 45, 200, 45)
+        
+        self.pdf.set_y(52)
 
     def payslip_title(self):
         # Title background box, now with slightly rounded corners for a modern feel
