@@ -15,7 +15,7 @@ class PremiumPayslipPDF:
         self.year = year
         self.date = date
 
-        # Minimalist, greyscale palette
+        # Minimalist greyscale palette
         self.black = (0, 0, 0)
         self.white = (255, 255, 255)
         self.light_gray = (245, 245, 245)
@@ -30,27 +30,28 @@ class PremiumPayslipPDF:
     def header(self):
         self.add_gradient_background()
         self.pdf.set_fill_color(*self.light_gray)
-        self.pdf.rect(0, 0, 210, 45, 'F')
+        self.pdf.rect(0, 0, 210, 42, 'F')
 
         if os.path.exists(self.logo_path):
-            self.pdf.image(self.logo_path, x=10, y=8, w=18)
+            self.pdf.image(self.logo_path, x=17, y=11, w=18)  # Logo shifted down for balance
 
-        self.pdf.set_xy(50, 11)
+        # Main header text, perfectly aligned and black
+        self.pdf.set_xy(42, 15)
         self.pdf.set_font("helvetica", 'B', 18)
         self.pdf.set_text_color(*self.black)
         self.pdf.cell(0, 8, "Helly Consultancy Services", ln=True)
 
-        self.pdf.set_x(50)
+        self.pdf.set_xy(42, 25)
         self.pdf.set_font("helvetica", '', 9)
-        self.pdf.set_text_color(*self.dark_gray)
-        self.pdf.cell(0, 5, "11,Shridevi apartment, 1st Floor,behind bhiwandi talkies", ln=True)
-        self.pdf.set_x(50)
-        self.pdf.cell(0, 5, "BHIWANDI,DIST- THANE,MAHARASHTRA, PIN-421308, MOBL: 7028630748", ln=True)
+        self.pdf.cell(0, 5, "11, Shridevi apartment, 1st Floor, behind bhiwandi talkies", ln=True)
 
-        self.pdf.set_line_width(1.5)
+        self.pdf.set_xy(42, 30)
+        self.pdf.cell(0, 5, "BHIWANDI, DIST-THANE, MAHARASHTRA, PIN-421308, MOBL: 7028630748", ln=True)
+
+        self.pdf.set_line_width(0.8)
         self.pdf.set_draw_color(*self.medium_gray)
-        self.pdf.line(10, 45, 200, 45)
-        self.pdf.set_y(50)
+        self.pdf.line(10, 42, 200, 42)
+        self.pdf.set_y(48)
 
     def payslip_title(self):
         self.pdf.set_fill_color(*self.medium_gray)
@@ -58,36 +59,34 @@ class PremiumPayslipPDF:
 
         self.pdf.set_font("helvetica", 'B', 14)
         self.pdf.set_text_color(*self.black)
-        self.pdf.set_y(self.pdf.get_y() + 4)
+        self.pdf.set_y(self.pdf.get_y() + 5)
         self.pdf.cell(0, 7, f"Payslip for the Month: {self.month} {self.year}", ln=True, align="C")
-        self.pdf.ln(6)
+        self.pdf.ln(4)
 
     def create_section_header(self, title, bg_color=None):
         if bg_color is None:
             bg_color = self.section_gray
-
         current_y = self.pdf.get_y()
         self.pdf.set_fill_color(*bg_color)
         self.pdf.rect(10, current_y, 190, 8, 'F')
         self.pdf.set_font("helvetica", 'B', 10)
         self.pdf.set_text_color(*self.black)
-        self.pdf.set_y(current_y + 1)
+        self.pdf.set_y(current_y + 2)
         self.pdf.set_x(15)
         self.pdf.cell(0, 6, title, ln=True)
-        self.pdf.ln(4)
+        self.pdf.ln(3)
 
     def employee_summary(self):
         self.create_section_header("EMPLOYEE INFORMATION")
-
         box_y = self.pdf.get_y()
         self.pdf.set_fill_color(*self.white)
-        self.pdf.rect(10, box_y, 190, 30, 'F')
+        self.pdf.rect(10, box_y, 190, 24, 'F')
 
         self.pdf.set_draw_color(*self.medium_gray)
         self.pdf.set_line_width(0.5)
-        self.pdf.rect(10, box_y, 190, 30)
+        self.pdf.rect(10, box_y, 190, 24)
 
-        self.pdf.set_y(box_y + 4)
+        self.pdf.set_y(box_y + 3)
         self.pdf.set_font("helvetica", '', 10)
         self.pdf.set_text_color(*self.black)
 
@@ -96,28 +95,27 @@ class PremiumPayslipPDF:
 
         self.pdf.set_x(15)
         self.pdf.set_font("helvetica", 'B', 9)
-        self.pdf.set_text_color(*self.black)
-        self.pdf.cell(25, 6, "Employee:")
+        self.pdf.cell(27, 6, "Employee:")
         self.pdf.set_font("helvetica", '', 9)
-        self.pdf.cell(65, 6, name)
+        self.pdf.cell(55, 6, name)
 
         self.pdf.set_font("helvetica", 'B', 9)
-        self.pdf.cell(20, 6, "Phone no:")
+        self.pdf.cell(22, 6, "Phone no:")
         self.pdf.set_font("helvetica", '', 9)
         self.pdf.cell(0, 6, mobile, ln=True)
 
         self.pdf.set_x(15)
         self.pdf.set_font("helvetica", 'B', 9)
-        self.pdf.cell(25, 6, "Period:")
+        self.pdf.cell(27, 6, "Period:")
         self.pdf.set_font("helvetica", '', 9)
-        self.pdf.cell(65, 6, f"{self.month} {self.year}")
+        self.pdf.cell(55, 6, f"{self.month} {self.year}")
 
         self.pdf.set_font("helvetica", 'B', 9)
-        self.pdf.cell(20, 6, "Pay Date:")
+        self.pdf.cell(22, 6, "Pay Date:")
         self.pdf.set_font("helvetica", '', 9)
         self.pdf.cell(0, 6, self.date if self.date else "N/A", ln=True)
 
-        self.pdf.ln(10)
+        self.pdf.ln(6)
 
     def salary_details(self):
         self.create_section_header("SALARY AGGREGATION")
@@ -126,13 +124,13 @@ class PremiumPayslipPDF:
         self.pdf.set_fill_color(*self.medium_gray)
         self.pdf.rect(10, table_y, 190, 8, 'F')
 
-        self.pdf.set_y(table_y + 1)
+        self.pdf.set_y(table_y + 1.5)
         self.pdf.set_font("helvetica", 'B', 10)
         self.pdf.set_text_color(*self.black)
         self.pdf.set_x(15)
-        self.pdf.cell(120, 6, "COMPONENT")
-        self.pdf.cell(0, 6, "AMOUNT (Rs.)", align="R")
-        self.pdf.ln(10)
+        self.pdf.cell(120, 5, "COMPONENT")
+        self.pdf.cell(0, 5, "AMOUNT (Rs.)", align="R")
+        self.pdf.ln(8)
 
         components = [
             ("Basic Salary", self.employee_row['SALARY']),
@@ -150,23 +148,23 @@ class PremiumPayslipPDF:
             self.pdf.set_line_width(0.3)
             self.pdf.line(10, row_y, 200, row_y)
 
-            self.pdf.set_y(row_y + 1)
+            self.pdf.set_y(row_y + 1.3)
             self.pdf.set_font("helvetica", '', 10)
             self.pdf.set_text_color(*self.black)
             self.pdf.set_x(15)
-            self.pdf.cell(120, 6, component)
+            self.pdf.cell(120, 5, component)
 
             self.pdf.set_font("helvetica", 'B', 10)
             amount_text = f"Rs.{abs(amount):,.2f}"
             if amount < 0:
                 amount_text = f"-{amount_text}"
-            self.pdf.cell(0, 6, amount_text, align="R")
-            self.pdf.ln(8)
+            self.pdf.cell(0, 5, amount_text, align="R")
+            self.pdf.ln(7)
 
         self.pdf.set_draw_color(*self.dark_gray)
         self.pdf.set_line_width(0.5)
         self.pdf.line(10, self.pdf.get_y(), 200, self.pdf.get_y())
-        self.pdf.ln(5)
+        self.pdf.ln(4)
 
         total = self.employee_row['NET']
         self.pdf.set_fill_color(*self.light_gray)
@@ -178,48 +176,48 @@ class PremiumPayslipPDF:
         self.pdf.set_x(15)
         self.pdf.cell(120, 8, "Net Pay (Total)")
         self.pdf.cell(0, 8, f"Rs.{total:,.2f}", align="R")
-        self.pdf.ln(12)
+        self.pdf.ln(11)
 
     def net_pay_section(self):
         net = float(self.employee_row["NET"])
         box_y = self.pdf.get_y()
         self.pdf.set_fill_color(*self.medium_gray)
-        self.pdf.rect(10, box_y, 190, 20, 'F')
+        self.pdf.rect(10, box_y, 190, 18, 'F')
 
         self.pdf.set_fill_color(*self.white)
-        self.pdf.rect(15, box_y + 3, 180, 14, 'F')
+        self.pdf.rect(15, box_y + 3, 180, 11, 'F')
 
         self.pdf.set_draw_color(*self.medium_gray)
         self.pdf.set_line_width(1)
-        self.pdf.rect(15, box_y + 3, 180, 14)
+        self.pdf.rect(15, box_y + 3, 180, 11)
 
         self.pdf.set_y(box_y + 6)
-        self.pdf.set_font("helvetica", 'B', 14)
+        self.pdf.set_font("helvetica", 'B', 13)
         self.pdf.set_text_color(*self.black)
-        self.pdf.cell(0, 8, f"NET SALARY: Rs.{net:,.2f}", ln=True, align="C")
-        self.pdf.ln(5)
+        self.pdf.cell(0, 7, f"NET SALARY: Rs.{net:,.2f}", ln=True, align="C")
+        self.pdf.ln(3)
 
         words_y = self.pdf.get_y()
         self.pdf.set_fill_color(*self.section_gray)
-        self.pdf.rect(10, words_y, 190, 10, 'F')
+        self.pdf.rect(10, words_y, 190, 8, 'F')
 
         self.pdf.set_y(words_y + 2)
         self.pdf.set_font("helvetica", 'I', 9)
         self.pdf.set_text_color(*self.dark_gray)
         words = num2words(net, lang="en_IN").title()
-        self.pdf.cell(0, 6, f"Amount in Words: Indian Rupee {words} Only", ln=True, align="C")
-        self.pdf.ln(10)
+        self.pdf.cell(0, 5, f"Amount in Words: Indian Rupee {words} Only", ln=True, align="C")
+        self.pdf.ln(8)
 
     def footer(self):
         footer_y = self.pdf.get_y()
         self.pdf.set_fill_color(*self.light_gray)
-        self.pdf.rect(0, footer_y, 210, 20, 'F')
+        self.pdf.rect(0, footer_y, 210, 18, 'F')
 
         self.pdf.set_draw_color(*self.section_gray)
         self.pdf.set_line_width(1)
         self.pdf.line(10, footer_y + 5, 200, footer_y + 5)
 
-        self.pdf.set_y(footer_y + 8)
+        self.pdf.set_y(footer_y + 6)
         self.pdf.set_font("helvetica", 'I', 8)
         self.pdf.set_text_color(*self.dark_gray)
         self.pdf.cell(0, 4, "-- This is a system-generated document --", ln=True, align="C")
@@ -241,7 +239,6 @@ class PremiumPayslipPDF:
         filename = f"{self.output_folder}/{emp_name}_December.pdf"
         self.pdf.output(filename)
         return filename
-
 
 def process_excel_file(excel_file, output_folder="generated_payslips", month="December", year="2024", date=None) -> list:
     df = pd.read_excel(excel_file, header=4)
