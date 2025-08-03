@@ -9,7 +9,6 @@ class PremiumPayslipPDF:
         self.output_folder = output_folder
         self.logo_path = logo_path
         self.pdf = FPDF(unit="mm", format="A4")
-        self.pdf.add_page()
         os.makedirs(self.output_folder, exist_ok=True)
         self.month = month
         self.year = year
